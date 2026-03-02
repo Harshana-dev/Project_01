@@ -73,10 +73,40 @@ public class GemController {
         return "admin/edit-gem";
     }
 
-    // ✅ POST /admin/gems/edit
-    // (If you want to re-upload files on edit, tell me and I’ll extend this)
+    // ✅ UPDATED POST /admin/gems/edit
+    // Fixed: Accepted MultipartFile to resolve 400 Bad Request
     @PostMapping("/edit")
-    public String updateGem(@ModelAttribute Gem gem) {
+    public String updateGem(
+            @ModelAttribute Gem gem,
+            @RequestParam("gemImage") MultipartFile imageFile
+    ) throws IOException {
+
+        // 1. Get existing gem data from database to keep old images if not replacing
+        Gem existingGem = gemService.getGemById(gem.getId());
+
+        // 2. Handle file upload if a new file was selected
+        if (!imageFile.isEmpty()) {
+            String uploadDir = getUploadDir();
+            ensureDirExists(uploadDir);
+
+            // Delete old file if it exists
+            deleteFileIfExists(uploadDir, existingGem.getImage1());
+
+            // Save new file and update gem object
+            String fileName = saveFile(imageFile, uploadDir);
+            gem.setImage1(fileName);
+        } else {
+            // Keep the old image filename if no new file was uploaded
+            gem.setImage1(existingGem.getImage1());
+        }
+
+        // Ensure other fields not in the form are retained
+        gem.setImage2(existingGem.getImage2());
+        gem.setImage3(existingGem.getImage3());
+        gem.setVideo(existingGem.getVideo());
+        gem.setStatus(existingGem.getStatus());
+
+        // 3. Save the updated gem
         gemService.saveGem(gem);
         return "redirect:/admin/gems";
     }

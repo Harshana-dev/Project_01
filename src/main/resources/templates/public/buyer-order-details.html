@@ -1,53 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Order Details</title></head>
+<head>
+    <title>Order Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
 <body>
 
-<h1>Order #<span th:text="${order.id}"></span></h1>
+<div th:replace="fragments/navbar :: nav"></div>
 
-<p><b>Status:</b> <span th:text="${order.orderStatus}"></span></p>
-<p><b>Payment:</b> <span th:text="${order.paymentMethod}"></span></p>
-<p><b>Paid:</b> <span th:text="${order.paid}"></span></p>
+<div class="container mt-4">
 
-<div th:if="${order.paymentMethod.name() == 'BANK_TRANSFER'}">
-    <p><b>Receipt Verified:</b> <span th:text="${order.receiptVerified}"></span></p>
-    <div th:if="${order.bankReceiptImage != null}">
-        <img th:src="@{'/uploads/' + ${order.bankReceiptImage}}" width="280">
+    <h1 class="mb-4">Order #<span th:text="${order.id}"></span></h1>
+
+    <div class="card p-3 mb-4">
+        <p><b>Status:</b> <span th:text="${order.orderStatus}"></span></p>
+        <p><b>Payment:</b> <span th:text="${order.paymentMethod}"></span></p>
+        <p><b>Paid:</b> <span th:text="${order.paid}"></span></p>
+
+        <div th:if="${order.paymentMethod.name() == 'BANK_TRANSFER'}">
+            <p><b>Receipt Verified:</b> <span th:text="${order.receiptVerified}"></span></p>
+            <div th:if="${order.bankReceiptImage != null}">
+                <img th:src="@{'/uploads/' + ${order.bankReceiptImage}}" class="img-fluid border" width="280">
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a class="btn btn-outline-secondary"
+               th:href="@{'/invoice?orderId=' + ${order.id} + '&phone=' + ${order.phone}}">
+                Download Invoice (PDF)
+            </a>
+        </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Delivery</h3>
+            <p><b>Name:</b> <span th:text="${order.customerName}"></span></p>
+            <p><b>Phone:</b> <span th:text="${order.phone}"></span></p>
+            <p><b>Address:</b> <span th:text="${order.deliveryAddress}"></span></p>
+        </div>
+        <div class="col-md-6">
+            <h3>Items</h3>
+            <ul class="list-group mb-3">
+                <li th:each="it : ${order.items}" class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <span th:text="${it.gem.name}"></span>
+                        <small class="text-muted"> - Qty: <span th:text="${it.quantity}"></span></small>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">Rs <span th:text="${it.price}"></span></span>
+                </li>
+            </ul>
+            <h3 class="text-end">Total: Rs <span th:text="${order.totalAmount}"></span></h3>
+        </div>
+    </div>
+
+    <hr>
+
+    <h3>Status Timeline</h3>
+    <ul class="list-group list-group-flush mb-4">
+        <li class="list-group-item" th:classappend="${order.orderStatus.name() == 'PENDING'} ? 'list-group-item-primary' : ''">
+            PENDING (Order received)
+        </li>
+        <li class="list-group-item">APPROVED</li>
+        <li class="list-group-item">PREPARING</li>
+        <li class="list-group-item">DELIVERING</li>
+        <li class="list-group-item">COMPLETED</li>
+    </ul>
+
+    <div class="mb-5">
+        <a th:href="@{/track}" class="btn btn-link">Track another order</a> |
+        <a th:href="@{/my-orders}" class="btn btn-link">My Orders</a> |
+        <a th:href="@{/}" class="btn btn-link">Home</a>
+    </div>
+
 </div>
 
-<h3>Delivery</h3>
-<p><b>Name:</b> <span th:text="${order.customerName}"></span></p>
-<p><b>Phone:</b> <span th:text="${order.phone}"></span></p>
-<p><b>Address:</b> <span th:text="${order.deliveryAddress}"></span></p>
-
-<h3>Items</h3>
-<ul>
-    <li th:each="it : ${order.items}">
-        <span th:text="${it.gem.name}"></span>
-        - Qty: <span th:text="${it.quantity}"></span>
-        - Price: Rs <span th:text="${it.price}"></span>
-    </li>
-</ul>
-
-<h3>Total: Rs <span th:text="${order.totalAmount}"></span></h3>
-
-<hr>
-
-<h3>Status Timeline (Simple)</h3>
-<ul>
-    <li th:classappend="${order.orderStatus.name() == 'PENDING'} ? 'active' : ''">
-        PENDING (Order received)
-    </li>
-    <li>APPROVED</li>
-    <li>PREPARING</li>
-    <li>DELIVERING</li>
-    <li>COMPLETED</li>
-</ul>
-
-<a href="/track">Track another order</a> |
-<a href="/my-orders">My Orders</a> |
-<a href="/">Home</a>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

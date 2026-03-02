@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Order Status</title></head>
+<head>
+    <title>Order Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <body>
+<div th:replace="fragments/navbar :: nav"></div>
 <h2>Order Status</h2>
 
 <p>Order ID: <b th:text="${order.id}"></b></p>
@@ -10,5 +14,6 @@
 <p th:if="${order.paymentId != null}">Payment ID: <b th:text="${order.paymentId}"></b></p>
 
 <a href="/">Back to Home</a>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

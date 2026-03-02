@@ -23,46 +23,33 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
-                // Make sure Spring Security uses your DB users
                 .userDetailsService(userDetailsService)
 
                 .authorizeHttpRequests(auth -> auth
-                        // Auth pages
+                        // Auth and Public Pages
                         .requestMatchers("/auth/**").permitAll()
 
-                        .requestMatchers("/", "/gem/**", "/uploads/**", "/cart/**", "/checkout/**", "/order/**", "/payhere/**").permitAll()
+                        // ✅ Added /invoice and /track/** to permitAll based on your instructions
+                        .requestMatchers("/", "/gem/**", "/gems/**", "/uploads/**", "/cart/**", "/checkout/**",
+                                "/order/**", "/payhere/**", "/invoice", "/track/**").permitAll()
 
-                        // Static resources (important when you add Bootstrap)
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico")
-                        .permitAll()
-
-                        // Public pages (you can change later)
-                        .requestMatchers("/", "/gems/**").permitAll()
+                        // Static resources
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/favicon.ico").permitAll()
 
                         // Admin area
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        .requestMatchers("/", "/gem/**", "/uploads/**").permitAll()
-
-                        // Buyer area (keep for later; for now it's okay to protect)
+                        // Buyer area
                         .requestMatchers("/buyer/**").hasRole("BUYER")
 
                         .anyRequest().authenticated()
                 )
 
                 .formLogin(form -> form
-                        // This is the page you will create: GET /auth/login
                         .loginPage("/auth/login")
-
-                        // This is where the login form POSTS to (Spring handles it)
                         .loginProcessingUrl("/login")
-
-                        // After successful login
                         .defaultSuccessUrl("/admin/dashboard", true)
-
-                        // If login fails
                         .failureUrl("/auth/login?error=true")
-
                         .permitAll()
                 )
 

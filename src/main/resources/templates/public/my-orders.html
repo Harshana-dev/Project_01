@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>My Orders</title></head>
+<body>
+
+<h1>My Orders</h1>
+
+<form th:action="@{/my-orders}" method="post">
+    <label>Enter your phone number:</label>
+    <input type="text" name="phone" th:value="${phone}" required>
+    <button type="submit">View Orders</button>
+</form>
+
+<hr>
+
+<div th:if="${orders != null}">
+    <h3>Orders for <span th:text="${phone}"></span></h3>
+
+    <p th:if="${orders.isEmpty()}">No orders found.</p>
+
+    <table border="1" th:if="${!orders.isEmpty()}">
+        <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Paid</th>
+            <th>Action</th>
+        </tr>
+
+        <tr th:each="o : ${orders}">
+            <td th:text="${o.id}"></td>
+            <td th:text="${o.createdAt}"></td>
+            <td th:text="${o.totalAmount}"></td>
+            <td th:text="${o.orderStatus}"></td>
+            <td th:text="${o.paid}"></td>
+            <td>
+                <form th:action="@{/track}" method="post">
+                    <input type="hidden" name="orderId" th:value="${o.id}">
+                    <input type="hidden" name="phone" th:value="${phone}">
+                    <button type="submit">View</button>
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<a href="/">Back to Home</a>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Order Details</title></head>
+<body>
+
+<h1>Order #<span th:text="${order.id}"></span></h1>
+
+<p><b>Status:</b> <span th:text="${order.orderStatus}"></span></p>
+<p><b>Payment:</b> <span th:text="${order.paymentMethod}"></span></p>
+<p><b>Paid:</b> <span th:text="${order.paid}"></span></p>
+
+<div th:if="${order.paymentMethod.name() == 'BANK_TRANSFER'}">
+    <p><b>Receipt Verified:</b> <span th:text="${order.receiptVerified}"></span></p>
+    <div th:if="${order.bankReceiptImage != null}">
+        <img th:src="@{'/uploads/' + ${order.bankReceiptImage}}" width="280">
+    </div>
+</div>
+
+<h3>Delivery</h3>
+<p><b>Name:</b> <span th:text="${order.customerName}"></span></p>
+<p><b>Phone:</b> <span th:text="${order.phone}"></span></p>
+<p><b>Address:</b> <span th:text="${order.deliveryAddress}"></span></p>
+
+<h3>Items</h3>
+<ul>
+    <li th:each="it : ${order.items}">
+        <span th:text="${it.gem.name}"></span>
+        - Qty: <span th:text="${it.quantity}"></span>
+        - Price: Rs <span th:text="${it.price}"></span>
+    </li>
+</ul>
+
+<h3>Total: Rs <span th:text="${order.totalAmount}"></span></h3>
+
+<hr>
+
+<h3>Status Timeline (Simple)</h3>
+<ul>
+    <li th:classappend="${order.orderStatus.name() == 'PENDING'} ? 'active' : ''">
+        PENDING (Order received)
+    </li>
+    <li>APPROVED</li>
+    <li>PREPARING</li>
+    <li>DELIVERING</li>
+    <li>COMPLETED</li>
+</ul>
+
+<a href="/track">Track another order</a> |
+<a href="/my-orders">My Orders</a> |
+<a href="/">Home</a>
+
+</body>
+</html>

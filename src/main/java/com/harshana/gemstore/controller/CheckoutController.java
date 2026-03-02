@@ -6,6 +6,7 @@ import com.harshana.gemstore.service.EmailService;
 import com.harshana.gemstore.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value; // Added import
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,10 @@ public class CheckoutController {
 
     private final OrderService orderService;
     private final EmailService emailService;
+
+    // ✅ Added: Check if email is enabled to prevent errors in controller
+    @Value("${app.email.enabled:false}")
+    private boolean emailEnabled;
 
     @SuppressWarnings("unchecked")
     private List<CartItem> getCart(HttpSession session) {
@@ -80,28 +85,29 @@ public class CheckoutController {
                 cart
         );
 
-        // ✅ Using sendSafe for buyer notification to prevent crashes
-        emailService.sendSafe(
-                order.getCustomerEmail(),
-                "Order Received - GemStore (Order #" + order.getId() + ")",
-                "Hi " + order.getCustomerName() + ",\n\n" +
-                        "Your order has been received.\n" +
-                        "Order ID: " + order.getId() + "\n" +
-                        "Total: Rs " + order.getTotalAmount() + "\n" +
-                        "Payment: " + order.getPaymentMethod() + "\n" +
-                        "Status: " + order.getOrderStatus() + "\n\n" +
-                        "Thank you!"
-        );
+        // ✅ Updated: Using sendSafe and checking enabled status to prevent crashes
+        if (emailEnabled) {
+            emailService.sendSafe(
+                    order.getCustomerEmail(),
+                    "Order Received - GemStore (Order #" + order.getId() + ")",
+                    "Hi " + order.getCustomerName() + ",\n\n" +
+                            "Your order has been received.\n" +
+                            "Order ID: " + order.getId() + "\n" +
+                            "Total: Rs " + order.getTotalAmount() + "\n" +
+                            "Payment: " + order.getPaymentMethod() + "\n" +
+                            "Status: " + order.getOrderStatus() + "\n\n" +
+                            "Thank you!"
+            );
 
-        // ✅ Using sendSafe for Admin notify to prevent crashes
-        emailService.sendSafe(
-                "admin@gemstore.com",
-                "New Order Received (Order #" + order.getId() + ")",
-                "New order received.\n" +
-                        "Order ID: " + order.getId() + "\n" +
-                        "Customer: " + order.getCustomerName() + " (" + order.getPhone() + ")\n" +
-                        "Total: Rs " + order.getTotalAmount()
-        );
+            emailService.sendSafe(
+                    "admin@gemstore.com",
+                    "New Order Received (Order #" + order.getId() + ")",
+                    "New order received.\n" +
+                            "Order ID: " + order.getId() + "\n" +
+                            "Customer: " + order.getCustomerName() + " (" + order.getPhone() + ")\n" +
+                            "Total: Rs " + order.getTotalAmount()
+            );
+        }
 
         // clear cart
         session.setAttribute("CART", null);

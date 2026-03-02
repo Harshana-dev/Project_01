@@ -1,9 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Order Success</title></head>
+<head>
+    <title>Order Success</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; }
+        .links { margin-top: 20px; }
+        .links a { margin: 0 10px; text-decoration: none; color: blue; }
+    </style>
+</head>
 <body>
 <h1>Order Created Successfully!</h1>
 <p>Your Order ID: <b th:text="${orderId}"></b></p>
-<a href="/">Back to Home</a>
+
+<div class="links">
+    <a th:href="@{/track}">Track Order</a> |
+    <a th:href="@{/my-orders}">My Orders</a> |
+    <a th:href="@{/}">Home</a>
+</div>
+
 </body>
 </html>

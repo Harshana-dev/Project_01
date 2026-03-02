@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Track Order</title></head>
+<body>
+
+<h1>Track Your Order</h1>
+
+<p style="color:red;" th:if="${error}" th:text="${error}"></p>
+
+<form th:action="@{/track}" method="post">
+    <label>Order ID:</label>
+    <input type="number" name="orderId" required><br><br>
+
+    <label>Phone:</label>
+    <input type="text" name="phone" required><br><br>
+
+    <button type="submit">Track</button>
+</form>
+
+<a href="/">Back to Home</a>
+
+</body>
+</html>

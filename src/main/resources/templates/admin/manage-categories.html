@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Categories</title>
+</head>
+<body>
+
+<h1>Categories</h1>
+
+<div th:if="${param.error}" style="color:red;">
+    Cannot delete this category because gems are using it. Move/delete gems first.
+</div>
+
+<div th:if="${param.success}" style="color:green;">
+    Category deleted successfully.
+</div>
+
+<a th:href="@{/admin/categories/add}">Add New Category</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+    </tr>
+    <tr th:each="cat : ${categories}">
+        <td th:text="${cat.id}"></td>
+        <td th:text="${cat.name}"></td>
+        <td>
+            <a th:href="@{'/admin/categories/delete/' + ${cat.id}}">Delete</a>
+        </td>
+    </tr>
+</table>
+<a th:href="@{/admin/dashboard}">Back to Dashboard</a>
+</body>
+</html>

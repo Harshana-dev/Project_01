@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Gem Details</title>
+
+    <style>
+        .slider {
+            position: relative;
+            width: 500px;
+            margin-top: 20px;
+        }
+
+        .slide {
+            display: none;
+        }
+
+        .slide img,
+        .slide video {
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 45%;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .prev {
+            left: 0;
+        }
+
+        .next {
+            right: 0;
+        }
+
+        .details {
+            margin-top: 20px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1 th:text="${gem.name}"></h1>
+
+<form th:action="@{'/cart/add/' + ${gem.id}}" method="post">
+    <button type="submit">Add to Cart</button>
+</form>
+
+<a href="/cart">Go to Cart</a>
+
+<!-- 🔥 Professional Slider -->
+<div class="slider">
+
+    <!-- Image 1 -->
+    <div class="slide active" th:if="${gem.image1 != null}">
+        <img th:src="@{'/uploads/' + ${gem.image1}}" />
+    </div>
+
+    <!-- Image 2 -->
+    <div class="slide" th:if="${gem.image2 != null}">
+        <img th:src="@{'/uploads/' + ${gem.image2}}" />
+    </div>
+
+    <!-- Image 3 -->
+    <div class="slide" th:if="${gem.image3 != null}">
+        <img th:src="@{'/uploads/' + ${gem.image3}}" />
+    </div>
+
+    <!-- Video -->
+    <div class="slide" th:if="${gem.video != null}">
+        <video controls>
+            <source th:src="@{'/uploads/' + ${gem.video}}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <button class="nav-btn prev" onclick="prevSlide()">❮</button>
+    <button class="nav-btn next" onclick="nextSlide()">❯</button>
+
+</div>
+
+<!-- Gem Details -->
+<div class="details">
+    <p th:text="${gem.description}"></p>
+    <p><strong>Carat:</strong> <span th:text="${gem.carat}"></span></p>
+    <p><strong>Price:</strong> Rs <span th:text="${gem.price}"></span></p>
+</div>
+
+<br>
+<a href="/">Back</a>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll(".slide");
+
+    function showSlide(index) {
+        slides.forEach(slide => slide.classList.remove("active"));
+        slides[index].classList.add("active");
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+        showSlide(currentSlide);
+    }
+</script>
+
+</body>
+</html>

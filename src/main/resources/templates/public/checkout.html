@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Checkout</title></head>
+<body>
+
+<h1>Checkout</h1>
+
+<p style="color:red;" th:if="${error}" th:text="${error}"></p>
+<h3>Total: Rs <span th:text="${total}"></span></h3>
+
+<form th:action="@{/checkout}" method="post" enctype="multipart/form-data">
+
+    <label>Name:</label>
+    <input type="text" name="customerName" required><br><br>
+
+    <label>Phone:</label>
+    <input type="text" name="phone" required><br><br>
+
+    <label>Email:</label>
+    <input type="email" name="customerEmail" required><br><br>
+
+    <label>Delivery Address:</label><br>
+    <textarea name="deliveryAddress" required></textarea><br><br>
+
+    <label>Payment Method:</label>
+    <select name="paymentMethod" id="paymentMethod" onchange="toggleReceipt()">
+        <option value="COD">Cash on Delivery</option>
+        <option value="BANK_TRANSFER">Bank Transfer</option>
+        <option value="CARD">Card (Tomorrow)</option>
+    </select>
+
+    <div id="receiptDiv" style="display:none; margin-top:10px;">
+        <label>Upload Bank Receipt:</label>
+        <input type="file" name="receipt" accept="image/*">
+    </div>
+
+    <br><br>
+    <button type="submit">Place Order</button>
+</form>
+
+<script>
+    function toggleReceipt() {
+        const method = document.getElementById('paymentMethod').value;
+        document.getElementById('receiptDiv').style.display =
+            (method === 'BANK_TRANSFER') ? 'block' : 'none';
+    }
+    toggleReceipt();
+</script>
+
+</body>
+</html>

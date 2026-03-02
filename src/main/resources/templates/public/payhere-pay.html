@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>PayHere Payment</title>
+    <script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
+</head>
+<body>
+
+<h2>Pay with Card (PayHere Sandbox)</h2>
+<p>Order: <b th:text="${orderId}"></b></p>
+<p>Amount: <b th:text="${amount}"></b> <span th:text="${currency}"></span></p>
+
+<button onclick="startPayment()">Pay Now</button>
+
+<script th:inline="javascript">
+    const merchantId = [[$,{merchantId}]];
+    const orderId = [[$,{orderId}]];
+    const amount = [[$,{amount}]];
+    const currency = [[$,{currency}]];
+
+    const items = [[$,{items}]];
+    const customerName = [[$,{customerName}]];
+    const phone = [[$,{phone}]];
+    const address = [[$,{address}]];
+
+    const parts = ("" + customerName).trim().split(" ");
+    const firstName = parts[0] || "Buyer";
+    const lastName = parts.slice(1).join(" ") || "Customer";
+
+    payhere.onCompleted = function () {
+        fetch("/payhere/confirm", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: "orderId=" + encodeURIComponent(orderId) + "&paymentId=" + encodeURIComponent("PAYHERE_SUCCESS")
+        }).then(() => window.location.href = "/payhere/success/" + orderId);
+    };
+
+    payhere.onDismissed = function () {
+        window.location.href = "/payhere/cancel/" + orderId;
+    };
+
+    payhere.onError = function (error) {
+        alert("PayHere Error: " + error);
+    };
+
+    function startPayment() {
+        const payment = {
+            sandbox: true,
+            merchant_id: "" + merchantId,
+            order_id: "" + orderId,
+            items: "" + items,
+            amount: "" + amount,
+            currency: "" + currency,
+
+            first_name: firstName,
+            last_name: lastName,
+            email: "harshanadeshapriyat@gmail.com",
+            phone: ("" + phone).replaceAll(" ", ""),
+
+            address: "" + address,
+            city: "Colombo",
+            country: "Sri Lanka"
+        };
+
+
+        payhere.startPayment(payment);
+    }
+</script>
+
+</body>
+</html>

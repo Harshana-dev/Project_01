@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Redirecting to PayHere</title>
+</head>
+<body>
+<h3>Redirecting to PayHere...</h3>
+
+<form th:action="${checkoutUrl}" method="post" id="payhereForm">
+    <input type="hidden" name="merchant_id" th:value="${merchantId}">
+    <input type="hidden" name="return_url" th:value="${returnUrl}">
+    <input type="hidden" name="cancel_url" th:value="${cancelUrl}">
+    <input type="hidden" name="notify_url" th:value="${notifyUrl}">
+
+    <input type="hidden" name="first_name" th:value="${firstName}">
+    <input type="hidden" name="last_name" th:value="${lastName}">
+    <input type="hidden" name="email" th:value="${email}">
+    <input type="hidden" name="phone" th:value="${phone}">
+    <input type="hidden" name="address" th:value="${address}">
+    <input type="hidden" name="city" th:value="${city}">
+    <input type="hidden" name="country" th:value="${country}">
+
+    <input type="hidden" name="order_id" th:value="${orderId}">
+    <input type="hidden" name="items" th:value="${items}">
+    <input type="hidden" name="currency" th:value="${currency}">
+    <input type="hidden" name="amount" th:value="${amount}">
+    <input type="hidden" name="hash" th:value="${hash}">
+</form>
+
+<script>
+    document.getElementById("payhereForm").submit();
+</script>
+</body>
+</html>

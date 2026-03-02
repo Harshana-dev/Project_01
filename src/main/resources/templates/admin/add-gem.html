@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Gem</title>
+</head>
+<body>
+
+<h1>Add Gem</h1>
+
+<form th:action="@{/admin/gems/add}"
+      th:object="${gem}"
+      method="post"
+      enctype="multipart/form-data">
+
+    Name:
+    <input type="text" th:field="*{name}" required/><br/>
+
+    Description:
+    <input type="text" th:field="*{description}" /><br/>
+
+    Carat:
+    <input type="number" step="0.01" th:field="*{carat}" /><br/>
+
+    Price:
+    <input type="number" step="0.01" th:field="*{price}" /><br/>
+
+    Category:
+    <select th:field="*{category}">
+        <option th:each="c : ${categories}"
+                th:value="${c.id}"
+                th:text="${c.name}">
+        </option>
+    </select><br/>
+
+    Image 1: <input type="file" name="img1"/><br/>
+    Image 2: <input type="file" name="img2"/><br/>
+    Image 3: <input type="file" name="img3"/><br/>
+
+    Video: <input type="file" name="videoFile"/><br/>
+
+    <button type="submit">Save</button>
+
+</form>
+
+<a th:href="@{/admin/gems}">Back</a>
+
+</body>
+</html>

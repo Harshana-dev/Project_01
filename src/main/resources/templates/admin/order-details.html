@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Order Details</title></head>
+<body>
+
+<h1>Order #<span th:text="${order.id}"></span></h1>
+
+<p><b>Customer:</b> <span th:text="${order.customerName}"></span></p>
+<p><b>Email:</b> <span th:text="${order.customerEmail}"></span></p>
+<p><b>Phone:</b> <span th:text="${order.phone}"></span></p>
+<p><b>Address:</b> <span th:text="${order.deliveryAddress}"></span></p>
+<p><b>Total:</b> Rs <span th:text="${order.totalAmount}"></span></p>
+<p><b>Payment:</b> <span th:text="${order.paymentMethod}"></span></p>
+<p><b>Paid:</b> <span th:text="${order.paid}"></span></p>
+<p><b>Status:</b> <span th:text="${order.orderStatus}"></span></p>
+
+<h3>Items</h3>
+<ul>
+    <li th:each="it : ${order.items}">
+        <span th:text="${it.gem.name}"></span>
+        (Qty: <span th:text="${it.quantity}"></span>)
+    </li>
+</ul>
+
+<div th:if="${order.bankReceiptImage != null}">
+    <h3>Bank Receipt</h3>
+    <img th:src="@{'/uploads/' + ${order.bankReceiptImage}}" width="300">
+    <p>Verified: <b th:text="${order.receiptVerified}"></b></p>
+
+    <form th:action="@{'/admin/orders/' + ${order.id} + '/verify-receipt'}" method="post">
+        <button type="submit">Mark Receipt Verified</button>
+    </form>
+</div>
+
+<h3>Update Status</h3>
+<form th:action="@{'/admin/orders/' + ${order.id} + '/status'}" method="post">
+    <select name="status">
+        <option th:each="s : ${statuses}"
+                th:value="${s}"
+                th:text="${s}"
+                th:selected="${s == order.orderStatus}">
+        </option>
+    </select>
+    <button type="submit">Update</button>
+</form>
+
+<a th:href="@{/admin/orders}">Back to Orders</a>
+
+</body>
+</html>

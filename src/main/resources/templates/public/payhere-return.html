@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Payment Processing</title></head>
+<body>
+<h2>Payment Processing</h2>
+<p>Your Order ID: <b th:text="${orderId}"></b></p>
+<p>If you just paid, please wait a moment and refresh. (We confirm payment via server notification.)</p>
+<a th:href="@{'/order/status/' + ${orderId}}">Check Order Status</a>
+</body>
+</html>

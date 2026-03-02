@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Manage Orders</title></head>
+<body>
+
+<h1>Orders</h1>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Phone</th>
+        <th>Total</th>
+        <th>Payment</th>
+        <th>Status</th>
+        <th>Paid</th>
+        <th>Action</th>
+    </tr>
+
+    <tr th:each="o : ${orders}">
+        <td th:text="${o.id}"></td>
+        <td th:text="${o.customerName}"></td>
+        <td th:text="${o.phone}"></td>
+        <td th:text="${o.totalAmount}"></td>
+        <td th:text="${o.paymentMethod}"></td>
+        <td th:text="${o.orderStatus}"></td>
+        <td th:text="${o.paid}"></td>
+        <td><a th:href="@{'/admin/orders/' + ${o.id}}">View</a></td>
+    </tr>
+</table>
+
+<a th:href="@{/admin/dashboard}">Back</a>
+
+</body>
+</html>

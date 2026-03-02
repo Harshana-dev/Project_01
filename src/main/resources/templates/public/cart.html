@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Cart</title></head>
+<body>
+
+<h1>Your Cart</h1>
+
+<table border="1" th:if="${cart != null and !cart.isEmpty()}">
+    <tr>
+        <th>Gem</th><th>Qty</th><th>Price</th><th>Total</th><th>Action</th>
+    </tr>
+    <tr th:each="i : ${cart}">
+        <td th:text="${i.gem.name}"></td>
+        <td th:text="${i.quantity}"></td>
+        <td th:text="${i.gem.price}"></td>
+        <td th:text="${i.gem.price * i.quantity}"></td>
+        <td><a th:href="@{'/cart/remove/' + ${i.gem.id}}">Remove</a></td>
+    </tr>
+</table>
+
+<p th:if="${cart == null or cart.isEmpty()}">Cart is empty.</p>
+
+<h3>Total: Rs <span th:text="${total}"></span></h3>
+
+<a href="/">Continue Shopping</a>
+&nbsp; | &nbsp;
+<a th:href="@{/checkout}">Checkout</a>
+&nbsp; | &nbsp;
+<a th:href="@{/cart/clear}">Clear Cart</a>
+
+</body>
+</html>
